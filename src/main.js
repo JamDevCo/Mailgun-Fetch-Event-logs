@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const fse = require('fs-extra');
+const mputils = require('./mailgun-putils.js');
 
 
 const MAILGUN_FETCHKIT_DEBUG = process.env.MAILGUN_FETCHKIT_DEBUG || false;
@@ -10,20 +11,13 @@ if (MAILGUN_FETCHKIT_DEBUG){
 }
 
 
-const data_dir = path.join(
-    __dirname,
-    "data"
-);
+const data_dir = mputils.data_dir;
 const config_file = path.join(
     data_dir,
     "config.json"
 );
-process.env['MAILGUN_DATA_DIR'] = data_dir;
-
-
 var domain = null;
 var apiKey = null;
-
 
 global.sharedObj = {
     "DATA_DIR": data_dir,
@@ -33,6 +27,10 @@ global.sharedObj = {
         "MAILFUN_USR_APIKEY": process.env.MAILFUN_USR_APIKEY || apiKey
     }
 };
+
+
+process.env['MAILGUN_DATA_DIR'] = data_dir;
+fse.ensureDir(data_dir, {mode: 0o2775});
 
 async function getConfig() {
     if (fse.pathExistsSync(global.sharedObj.CONFIG_FILE_PATH)) {
@@ -93,9 +91,9 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
+  // if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
-  }
+  // }
 });
 
 ipcMain.on('online-status-changed', (event, status) => {

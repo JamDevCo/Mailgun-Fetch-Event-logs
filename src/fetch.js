@@ -1,15 +1,17 @@
-const fs = require('fs-extra');
+const fse = require('fs-extra');
 const mputils = require('./mailgun-putils.js');
 const Mailgun = require('mailgun-js');
 
-const events = fs.readJsonSync('./data/events-sample.json')
-
-// Events required; Rejected, Failed (Permanent or temporary)
-// Fields required: recipient,delivery status message,timestamp
-
-const config = {
+var config = {
     "domain": process.env.MAILGUN_USR_DOMAIN || "example.com",
     "apiKey": process.env.MAILFUN_USR_APIKEY || 'example'
+}
+
+fse.ensureDir(mputils.data_dir, {mode: 0o2775});
+if (fse.pathExistsSync(mputils.CONFIG_FILE_PATH)) {
+    jsConfig = fse.readJsonSync(mputils.CONFIG_FILE_PATH);
+    config.domain = jsConfig.MAILGUN_USR_DOMAIN;
+    config.apiKey = jsConfig.MAILFUN_USR_APIKEY;
 }
 
 mputils.csvFinder();

@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const mputils = require('./mailgun-putils.js');
 const Mailgun = require('mailgun-js');
 
-const events = fs.readJsonSync('./data/events-sample.json')
+const events = fs.readJsonSync('./events-sample.json')
 
 // Events required; Rejected, Failed (Permanent or temporary)
 // Fields required: recipient,delivery status message,timestamp

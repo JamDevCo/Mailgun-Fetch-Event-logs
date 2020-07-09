@@ -19,6 +19,7 @@ var domainElement = document.querySelector("#usrDomain");
 var apiKeyElement = document.querySelector("#usrApiKey");
 var noticeTitle = document.querySelector("#notice-title");
 var noticeMessage = document.querySelector("#notice-message");
+var credform = document.querySelector("#credform");
 
 if (config.domain) {
     domainElement.value = config.domain;
@@ -44,6 +45,21 @@ function listDomains()  {
 }
 
 
+credform.addEventListener('submit', (e) => {
+    event.preventDefault();
+    noticeTitle.innerHTML = "Notice";
+    noticeMessage.innerHTML = "Please wait a moment...";
+    MicroModal.show("notice");
+    setTimeout(trigger_button, 500);
+    return false;
+});
+
+
+function sleep(delay) {
+    var start = new Date().getTime();
+    while (new Date().getTime() < start + delay);
+  }
+
 function trigger_button() {
     var apiKey = apiKeyElement.value;
     var domain = domainElement.value;
@@ -51,9 +67,7 @@ function trigger_button() {
         "MAILGUN_USR_DOMAIN": domain,
         "MAILFUN_USR_APIKEY": apiKey
     }
-    noticeTitle.innerHTML = "Notice";
-    noticeMessage.innerHTML = "Please wait a moment...";
-    MicroModal.show("notice");
+    noticeMessage.innerHTML = "Fetching logs...";
     try{
         setMailgun(apiKey, domain);
     } catch (err) {
@@ -71,12 +85,8 @@ function trigger_button() {
         if (e.statusCode < 300) {
             noticeTitle.innerHTML = "Notice";
             noticeMessage.innerHTML = e.statusMessage;
-            saveDataAsJSON({
-                    "MAILGUN_USR_DOMAIN": domain,
-                    "MAILFUN_USR_APIKEY": apiKey
-                },
-                sharedObj["CONFIG_FILE_PATH"]
-            );
+            sleep(3000);
+            alert(e.statusMessage);
         } else {
             noticeTitle.innerHTML = "<div style='color: red'>Error!!!!</div>";
             noticeMessage.innerHTML = e.statusMessage;

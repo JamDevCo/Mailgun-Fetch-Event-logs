@@ -9,13 +9,19 @@ const path = require('path');
 const data_dir = path.join(
     __dirname,
     "data"
-);
+).replace("resources\\app.asar\\src\\", "");
+const CONFIG_FILE_PATH = path.join(data_dir, 'config.json');
 
-async function saveDataAsJSON(data, filename) {
-    fse.writeJson(filename, data, err => {
-      if (err) return console.error(err)
-      console.log('Write to file (' + filename + ') success!');
-    });
+
+async function saveDataAsJSON(data, filename, override) {
+    if(fse.pathExistsSync(filename) && !override) {
+        console.log("File already exists: " + filename);
+    } else {
+        fse.writeJson(filename, data, err => {
+          if (err) return console.error(err)
+          console.log('Write to file (' + filename + ') success!');
+        });
+    }
 }
 
 function getStoredCSV() {
@@ -70,7 +76,20 @@ class MailgunCSVLog {
 
             var delivery_code = 200
             var delivery_status = '';
-            var recipients = item.message.recipients.join('; ');
+            var recipients = [];
+            var reason = '';
+            var subject_id = item.message.headers['message-id'];
+
+            try {
+                recipients = item.message.recipients.join('; ');
+            } catch (err) {
+                recipients = item.recipient;
+            }
+
+            console.log(subject_id);
+            if (item.reason != undefined) {
+                reason = item.reason;
+            }
 
             if (item.hasOwnProperty('delivery-status')) {
                 delivery_code = item['delivery-status']['code'];
@@ -82,8 +101,9 @@ class MailgunCSVLog {
                 "recipients": recipients,
                 "delivery-code": delivery_code,
                 "delivery-status": delivery_status,
+                "reason": reason,
                 "timestamp": item.timestamp,
-                "subject-id": item.message.headers['message-id'],
+                "subject-id": subject_id,
                 "subject": item.message.headers.subject,
                 "sender": item.message.headers.from
             });
@@ -115,6 +135,7 @@ class MailgunCSVLog {
             {id: 'recipients', title: 'Recipients'},
             {id: 'delivery-status', title: 'Delivery Status'},
             {id: 'delivery-code', title: 'Delivery Code'},
+            {id: 'reason', title: 'Reason'},
             {id: 'timestamp', title: 'Timestamp'},
             {id: 'subject-id', title: 'Subject ID'},
             {id: 'subject', title: 'Subject'},
@@ -132,6 +153,7 @@ class MailgunCSVLog {
             .then(()=> console.log(
                 return_msg
             ));
+        console.log(return_msg);
         return return_msg;
     }
 
@@ -140,20 +162,27 @@ class MailgunCSVLog {
         var csvlogger = this;
         this.mailgun.get(
             `/${csvlogger.domain}/events`,
-            { "ascending": "yes", "limit": 300},
-            (error, events) => {
-                csvlogger.statusCode = error.statusCode;
-                if (error.statusCode == 401) {
+            {"event": "rejected OR failed"},
+            (error, events) => {        
+                console.log(error, events);        
+                if (error != undefined ) {
                     csvlogger.statusMessage = events.message;
+                    csvlogger.statusCode = error.statusCode;
                     console.log(events.message);
                 } else if (!events.hasOwnProperty('items')) {
                     csvlogger.statusMessage = events.message;
                     csvlogger.statusCode = 400;
                     console.log(events.message);
                 } else {
-                    csvlogger.statusMessage = "Got " + events.items.length + " items";
                     csvlogger.statusCode = 200;
-                    csvlogger.save_events(events);
+                    csvlogger.statusMessage = csvlogger.save_events(events);
+                    saveDataAsJSON({
+                            "MAILGUN_USR_DOMAIN": csvlogger.domain,
+                            "MAILFUN_USR_APIKEY": csvlogger.apiKey
+                        },
+                        CONFIG_FILE_PATH,
+                        false
+                    );
                 }
                 if (typeof callback === "function") {
                     callback(csvlogger);
@@ -176,3 +205,5 @@ class MailgunCSVLog {
 
 exports.MailgunCSVLog = MailgunCSVLog;
 exports.csvFinder = csvFinder;
+exports.data_dir = data_dir;
+exports.CONFIG_FILE_PATH = CONFIG_FILE_PATH;
