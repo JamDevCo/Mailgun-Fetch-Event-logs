@@ -20,6 +20,12 @@ var apiKeyElement = document.querySelector("#usrApiKey");
 var noticeTitle = document.querySelector("#notice-title");
 var noticeMessage = document.querySelector("#notice-message");
 
+if (config.domain) {
+    domainElement.value = config.domain;
+}
+if (config.apiKey) {
+    apiKeyElement.value = config.apiKey;
+}
 
 async function saveDataAsJSON(data, filename) {
     fse.writeJson(filename, data, err => {

@@ -2,7 +2,12 @@ const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const fse = require('fs-extra');
 
-require('electron-reload')(__dirname);
+
+const MAILGUN_FETCHKIT_DEBUG = process.env.MAILGUN_FETCHKIT_DEBUG || false;
+
+if (MAILGUN_FETCHKIT_DEBUG){
+  require('electron-reload')(__dirname);
+}
 
 
 const data_dir = path.join(
@@ -37,9 +42,9 @@ async function getConfig() {
 }
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
-  app.quit();
-}
+// if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+//   app.quit();
+// }
 
 const createWindow = () => {
   getConfig();
@@ -47,13 +52,10 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 800,
     resizable: true,
     center: true,
     closable: true,
-    alwaysOnTop: false,
-    // fullscreen: true,
-    kiosk: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -63,7 +65,9 @@ const createWindow = () => {
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (MAILGUN_FETCHKIT_DEBUG) {
+      mainWindow.webContents.openDevTools();
+  }
 
   // Build memnu from template
   const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);

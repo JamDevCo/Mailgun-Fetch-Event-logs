@@ -1,5 +1,5 @@
 {
-  "name": "dpis.mailgun",
+  "name": "mailgun.fetchlogs",
   "version": "1.0.0",
   "description": "Pull mailgun data",
   "main": "src/main.js",
@@ -7,7 +7,9 @@
     "start": "electron .",
     "fetch": "cd src && node ./fetch.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-sample": "cd src && node ./sample.js"
+    "test-sample": "cd src && node ./sample.js",
+		"pack": "electron-builder",
+		"dist": "electron-builder"
   },
   "keywords": [
     "mailgun"
@@ -27,5 +29,17 @@
     "mailgun-js": "^0.22.0",
     "micromodal": "^0.4.6",
     "moment": "^2.27.0"
+  },
+  "build": {
+    "appId": "dev.jamaicans.mailgun.fetchlogs",
+    "productName": "Mailgun - Fetch Event Logs",
+    "directories": {
+      "output": "build"
+    },
+    "target": "NSIS",
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false
+    }
   }
 }

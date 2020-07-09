@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A layout example that shows off a responsive product landing page.">
-    <title>Landing Page &ndash; Layout Examples &ndash; Pure</title>
+    <title>Landing Page &ndash; Layout Examples &ndash; Pure</title>    
     <link rel="stylesheet" href="css/pure.css">
     <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -13,11 +13,9 @@
     
 <div class="splash-container">
     <div class="splash">
-        <h1 class="splash-head">Mailgun - Fetch Event Logs</h1>
+        <h1 class="splash-head">Mailgun <br/> <small>Event Logs</small></h1>
         <p class="splash-subhead">
-            Backup Mailgun event logs. By default Mailgun keeps track of every event that happens to every message
-            <br>
-            and stores this data for at least 30 days for paid accounts and 2 days for free accounts.
+            Backup Mailgun event logs. By default Mailgun keeps track and stores every event, but only 2 to 30 days.
         </p>
         <div>
             <form class="pure-form pure-form-stacked pure-g" onsubmit="return trigger_button();">
@@ -39,7 +37,9 @@
     <div class="content">
         <h2 class="content-head is-center">Event Logs</h2>
         <p style="text-align: center">
-            List of documents and their event logs can be found: <script>document.write(process.env['MAILGUN_DATA_DIR'])</script>
+            All domains and their event logs can be found:
+            <br/>
+            <script>document.write(process.env['MAILGUN_DATA_DIR'])</script>
         </p>
         <br/>
         <br/>
