@@ -4,6 +4,7 @@ build/
 
 # Ignore files
 *.csv
+.env
 docker-compose.override.yml
 src/data/config.json
 src/data/files.json

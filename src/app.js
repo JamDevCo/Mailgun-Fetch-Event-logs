@@ -7,7 +7,7 @@ const Mailgun = require('mailgun-js');
 const sharedObj = remote.getGlobal('sharedObj');
 const config = {
     "domain": sharedObj.CONFIG.MAILGUN_USR_DOMAIN || localStorage.getItem("MAILGUN_USR_DOMAIN"),
-    "apiKey": sharedObj.CONFIG.MAILFUN_USR_APIKEY || localStorage.getItem("MAILFUN_USR_APIKEY")
+    "apiKey": sharedObj.CONFIG.MAILGUN_USR_APIKEY || localStorage.getItem("MAILGUN_USR_APIKEY")
 }
 
 var MicroModal = require('micromodal');
@@ -65,7 +65,7 @@ function trigger_button() {
     var domain = domainElement.value;
     var config = {
         "MAILGUN_USR_DOMAIN": domain,
-        "MAILFUN_USR_APIKEY": apiKey
+        "MAILGUN_USR_APIKEY": apiKey
     }
     noticeMessage.innerHTML = "Fetching logs...";
     try{

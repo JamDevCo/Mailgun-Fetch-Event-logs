@@ -9,7 +9,7 @@ const events = fs.readJsonSync('./events-sample.json')
 
 const config = {
     "domain": process.env.MAILGUN_USR_DOMAIN || "example.com",
-    "apiKey": process.env.MAILFUN_USR_APIKEY || 'example'
+    "apiKey": process.env.MAILGUN_USR_APIKEY || 'example'
 }
 
 mputils.csvFinder();

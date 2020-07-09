@@ -178,7 +178,7 @@ class MailgunCSVLog {
                     csvlogger.statusMessage = csvlogger.save_events(events);
                     saveDataAsJSON({
                             "MAILGUN_USR_DOMAIN": csvlogger.domain,
-                            "MAILFUN_USR_APIKEY": csvlogger.apiKey
+                            "MAILGUN_USR_APIKEY": csvlogger.apiKey
                         },
                         CONFIG_FILE_PATH,
                         false

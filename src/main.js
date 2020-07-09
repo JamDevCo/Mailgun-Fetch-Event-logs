@@ -24,7 +24,7 @@ global.sharedObj = {
     "CONFIG_FILE_PATH": config_file,
     "CONFIG": {
         "MAILGUN_USR_DOMAIN": process.env.MAILGUN_USR_DOMAIN || domain,
-        "MAILFUN_USR_APIKEY": process.env.MAILFUN_USR_APIKEY || apiKey
+        "MAILGUN_USR_APIKEY": process.env.MAILGUN_USR_APIKEY || apiKey
     }
 };
 

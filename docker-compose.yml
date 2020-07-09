@@ -5,5 +5,5 @@ services:
         image: jamaicandevelopers/mailgun.events.fetch
         shm_size: "256M"
         volumes: [
-           "$PWD/data:/usr/src/app/data"
+           "$PWD/data:/data"
         ]
