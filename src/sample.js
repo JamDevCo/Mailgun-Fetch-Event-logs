@@ -6,4 +6,9 @@ const events = fs.readJsonSync('./data/events-sample.json')
 // Events required; Rejected, Failed (Permanent or temporary)
 // Fields required: recipient,delivery status message,timestamp
 
-mputils.save_events(events);
+const config = {
+    "domain": "dpkjm.com",
+    "apikey": "aa5f6"
+}
+var mailgun = mputils.MailgunCSVLog(config.domain, config.apikey);
+mailgun.save_events(events);
