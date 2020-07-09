@@ -1,7 +1,9 @@
 # Ignore folders
+build/
 node_modules/
 
 # Ignore files
 *.csv
+docker-compose.override.yml
 src/data/config.json
 src/data/files.json

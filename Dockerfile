@@ -5,8 +5,10 @@ WORKDIR /usr/src/app
 COPY . .
 
 RUN npm install
+RUN mkdir -p /usr/src/app/src/data
+RUN ln -s /usr/src/app/src/data /data
 
-VOLUME ["data"]
+VOLUME ["/data"]
 
 
 CMD [ "npm", "run", "fetch"]

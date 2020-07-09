@@ -1,0 +1,9 @@
+version: '3.3'
+
+services:
+    downloader:
+        image: jamaicandevelopers/mailgun.events.fetch
+        shm_size: "256M"
+        volumes: [
+           "$PWD/data:/usr/src/app/data"
+        ]
