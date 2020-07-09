@@ -2,8 +2,10 @@
   "name": "dpis.mailgun",
   "version": "1.0.0",
   "description": "Pull mailgun data",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
+    "start": "electron .",
+    "fetch": "cd src && node ./fetch.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-sample": "cd src && node ./sample.js"
   },
@@ -13,12 +15,17 @@
   "author": "Oshane Bailey",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^9.1.0"
+    "electron": "^9.1.0",
+    "electron-builder": "^22.7.0",
+    "electron-reload": "^1.5.0",
+    "electron-squirrel-startup": "^1.0.0"
   },
   "dependencies": {
+    "bootstrap": "^4.5.0",
     "csv-writer": "^1.6.0",
     "fs-extra": "^9.0.1",
     "mailgun-js": "^0.22.0",
+    "micromodal": "^0.4.6",
     "moment": "^2.27.0"
   }
 }

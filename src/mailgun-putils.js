@@ -1,14 +1,67 @@
 
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const fs = require('fs-extra');
+const fs = require('fs');
+const fse = require('fs-extra');
 const moment = require('moment');
 const path = require('path');
 
+
+const data_dir = path.join(
+    __dirname,
+    "data"
+);
+
+async function saveDataAsJSON(data, filename) {
+    fse.writeJson(filename, data, err => {
+      if (err) return console.error(err)
+      console.log('Write to file (' + filename + ') success!');
+    });
+}
+
+function getStoredCSV() {
+    var storedFiles = path.join(data_dir, 'files.json');
+    if (fse.pathExistsSync(storedFiles)) {
+        return fse.readJsonSync(path.join(data_dir, 'files.json'));
+    }
+    return {};
+}
+
+function csvFinder () {
+    var records = {};
+    var files = fs.readdirSync(data_dir);
+    files.forEach(domain => {
+        var domain_filepath = path.join(data_dir, domain);
+        if ( fs.lstatSync(domain_filepath).isDirectory() ) {
+            records[domain] = [];
+            try {
+                var subFiles = fs.readFileSync(domain_filepath);
+                subFiles.forEach(event_log => {
+                    if (path.extname(event_log) == ".csv") {
+                        var event_log_filepth = path.join(domain_filepath, event_log);
+                        records[domain].push(event_log_filepth);
+                    }
+    
+                });
+            } catch (err) {
+                // console.log(err);
+            }
+        }
+    });
+    console.log("Domains:")
+    console.log(records);
+    return records;
+};
+
+
+
 class MailgunCSVLog {
 
-    constructor(domain, apiKey) {
+    constructor(mailgun, domain, apiKey) {
+        this.mailgun = mailgun;
         this.domain = domain;
         this.apiKey = apiKey;
+        this.statusCode = 200;
+        this.statusMessage = '';
     }
 
     format_csv_events(events) {
@@ -40,12 +93,17 @@ class MailgunCSVLog {
 
     save_events(events) {
 
+        const data = this.format_csv_events(events);
+        if (data.length == 0) {
+            return "No records found";
+        }
+
         const domain_dir = path.join(
-            __dirname,
-            "data",
+            data_dir,
             this.domain
         );
-        fs.ensureDirSync(domain_dir);
+
+        fse.ensureDirSync(domain_dir, {mode: 0o2775});
 
         const filepath = path.join(
             domain_dir,
@@ -67,32 +125,54 @@ class MailgunCSVLog {
             header: header
         });
 
-        const data = this.format_csv_events(events);
+        var return_msg = 'Got ' + data.length + " records.\n "
+            + 'The CSV file was written successfully to ' + filepath;
         csvWriter
             .writeRecords(data)
             .then(()=> console.log(
-                'The CSV file was written successfully to ' + filepath
+                return_msg
             ));
+        return return_msg;
     }
 
 
-     get_events() {
-        mailgun.get(
-            `/${DOMAIN}/events`,
+     get_events(callback) {
+        var csvlogger = this;
+        this.mailgun.get(
+            `/${csvlogger.domain}/events`,
             { "ascending": "yes", "limit": 300},
-            (error, data) {
-                console.log(body);
+            (error, events) => {
+                csvlogger.statusCode = error.statusCode;
+                if (error.statusCode == 401) {
+                    csvlogger.statusMessage = events.message;
+                    console.log(events.message);
+                } else if (!events.hasOwnProperty('items')) {
+                    csvlogger.statusMessage = events.message;
+                    csvlogger.statusCode = 400;
+                    console.log(events.message);
+                } else {
+                    csvlogger.statusMessage = "Got " + events.items.length + " items";
+                    csvlogger.statusCode = 200;
+                    csvlogger.save_events(events);
+                }
+                if (typeof callback === "function") {
+                    callback(csvlogger);
+                }
             }
         );
     }
 
     track_webhook() {
-        mailgun.get(`/domain/${DOMAIN}/webhooks`, (error, body) {
-            console.log(body);
-        });
+        var csvlogger = this;
+        this.mailgun.get(`/domain/${csvlogger.domain}/webhooks`,
+            (error, events) => {
+                csvlogger.save_events(events);
+            }
+        );
     }
 
 };
 
 
-exports.MailgunCSVLog = MailgunCSVLog
+exports.MailgunCSVLog = MailgunCSVLog;
+exports.csvFinder = csvFinder;

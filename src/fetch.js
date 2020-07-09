@@ -16,4 +16,4 @@ mputils.csvFinder();
 
 var mailgun = require('mailgun-js')({ apiKey: config.apiKey, domain: config.domain });
 var mailgun = new mputils.MailgunCSVLog(mailgun, config.domain, config.apikey);
-mailgun.save_events(events);
+mailgun.get_events();
