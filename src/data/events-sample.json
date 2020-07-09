@@ -1,0 +1,82 @@
+{
+    "items": [
+        {
+            "tags": [],
+            "id": "czsjqFATSlC3QtAK-C80nw",
+            "timestamp": 1376325780.160809,
+            "envelope": {
+                "sender": "me@samples.mailgun.org",
+                "transport": ""
+            },
+            "event": "accepted",
+            "campaigns": [],
+            "user-variables": {},
+            "flags": {
+                "is-authenticated": true,
+                "is-test-mode": false
+            },
+            "message": {
+                "headers": {
+                "to": "foo@example.com",
+                "message-id": "20130812164300.28108.52546@samples.mailgun.org",
+                "from": "Excited User <me@samples.mailgun.org>",
+                "subject": "Hello"
+                },
+                "attachments": [],
+                "recipients": [
+                "foo@example.com",
+                "baz@example.com",
+                "bar@example.com"
+                ],
+                "size": 69
+            },
+            "recipient": "baz@example.com",
+            "method": "http"
+        },
+        {
+            "severity": "temporary",
+            "tags": [],
+            "id": "czsjqFATSlC3QtAK-C80nw",
+            "envelope": {
+            "sender": "me@samples.mailgun.org",
+            "transport": ""
+            },
+            "delivery-status": {
+                "code": 498,
+                "message": "No MX for [example.com]",
+                "retry-seconds": 900,
+                "description": "No MX for [example.com]"
+            },
+            "campaigns": [],
+            "reason": "generic",
+            "user-variables": {},
+            "flags": {
+            "is-authenticated": true,
+            "is-test-mode": false
+            },
+            "timestamp": 1376435471.10744,
+            "message": {
+                "headers": {
+                    "to": "baz@example.com, bar@example.com",
+                    "message-id": "20130813230036.10303.40433@samples.mailgun.org",
+                    "from": "Excited User <me@samples.mailgun.org>",
+                    "subject": "Hello"
+                },
+                "attachments": [],
+                "recipients": [
+                    "baz@example.com",
+                    "bar@example.com"
+                ],
+                "size": 370
+            },
+            "recipient": "bar@example.com",
+            "event": "failed"
+        }
+    ],
+    "paging": {
+        "next":
+            "https://api.mailgun.net/v3/samples.mailgun.org/events/W3siY...",
+        "previous":
+            "https://api.mailgun.net/v3/samples.mailgun.org/events/Lkawm..."
+    }
+}
