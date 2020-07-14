@@ -1,4 +1,4 @@
-Welcome to Mailgun Fetch Events Log
+Welcome to Mailgun Fetch Event Logs
 
 1. Go to [https://downloads.jamaicans.dev/](https://downloads.jamaicans.dev/), click on Windows Apps and download the Mailgun - Fetch Event Setup.zip
 
